@@ -1,0 +1,8 @@
+node_modules
+bin
+views
+coverage
+.env
+package-lock.json
+./public/javascripts
+Backend_intern_task.pdf
