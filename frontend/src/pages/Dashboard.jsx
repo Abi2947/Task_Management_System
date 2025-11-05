@@ -21,7 +21,6 @@ import {
   FormControl,
   InputLabel,
   IconButton,
-  Tooltip,
   Button,
   InputAdornment,
 } from "@mui/material";
@@ -47,7 +46,7 @@ export default function Dashboard({ token, darkMode }) {
     due_date: "",
     labels: [],
   });
-  const [username, setUsername] = useState("Task Warrior");
+  const [username, setUsername] = useState();
   const [newLabelName, setNewLabelName] = useState("");
   const [newLabelColor, setNewLabelColor] = useState("#1976d2");
 
@@ -128,7 +127,12 @@ export default function Dashboard({ token, darkMode }) {
   return (
     <Container maxWidth="lg" sx={{ pt: 12, pb: 8 }}>
       <Box textAlign="center" mb={6}>
-        <Typography variant="h3" fontWeight="bold" gutterBottom>
+        <Typography
+          variant="h3"
+          fontWeight="bold"
+          gutterBottom
+          color="text.primary"
+        >
           Welcome back, Task Warrior! <strong>{username}</strong>
         </Typography>
         <Typography variant="h6" color="text.secondary">
@@ -161,22 +165,27 @@ export default function Dashboard({ token, darkMode }) {
         ))}
       </Box>
 
-      {/* PERFECT SQUARE GRID */}
+      {/* SQUARE CARDS — AUTO LIGHT/DARK */}
       <Grid container spacing={3}>
         {filteredTasks.map((task) => (
           <Grid item xs={6} sm={4} md={3} key={task._id}>
             <Card
               sx={{
                 width: "100%",
-                height: 260,
+                height: 300,
                 borderRadius: 4,
-                bgcolor: "#2c2c2c",
-                color: "#fff",
-                boxShadow: "0 8px 32px rgba(0,0,0,0.3)",
-                transition: "0.3s",
+                bgcolor: darkMode ? "#1e1e1e" : "background.paper",
+                color: darkMode ? "#fff" : "text.primary",
+                boxShadow: darkMode
+                  ? "0 8px 32px rgba(0,0,0,0.4)"
+                  : "0 8px 32px rgba(0,0,0,0.12)",
+                border: darkMode ? "1px solid #333" : "1px solid #e0e0e0",
+                transition: "all 0.3s ease",
                 "&:hover": {
                   transform: "translateY(-8px)",
-                  boxShadow: "0 16px 48px rgba(0,0,0,0.4)",
+                  boxShadow: darkMode
+                    ? "0 16px 48px rgba(0,0,0,0.6)"
+                    : "0 16px 48px rgba(0,0,0,0.2)",
                 },
                 display: "flex",
                 flexDirection: "column",
@@ -185,16 +194,17 @@ export default function Dashboard({ token, darkMode }) {
               <CardContent
                 sx={{
                   flexGrow: 1,
-                  p: 2.5,
+                  p: 3,
                   display: "flex",
                   flexDirection: "column",
                 }}
               >
+                {/* Title + Actions */}
                 <Box
                   display="flex"
                   justifyContent="space-between"
                   alignItems="flex-start"
-                  mb={1}
+                  mb={1.5}
                 >
                   <Typography
                     variant="h6"
@@ -215,7 +225,10 @@ export default function Dashboard({ token, darkMode }) {
                         setOpen(true);
                       }}
                     >
-                      <Edit fontSize="small" sx={{ color: "#aaa" }} />
+                      <Edit
+                        fontSize="small"
+                        sx={{ color: darkMode ? "#aaa" : "#666" }}
+                      />
                     </IconButton>
                     <IconButton
                       size="small"
@@ -226,21 +239,41 @@ export default function Dashboard({ token, darkMode }) {
                   </Box>
                 </Box>
 
-                <Typography
-                  variant="body2"
-                  color="#ccc"
+                {/* SCROLLABLE DESCRIPTION */}
+                <Box
                   sx={{
-                    mb: 1.5,
                     flexGrow: 1,
-                    fontSize: "0.95rem",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
+                    overflowY: "auto",
+                    pr: 1,
+                    mb: 2,
+                    "&::-webkit-scrollbar": { width: 6 },
+                    "&::-webkit-scrollbar-track": {
+                      background: darkMode ? "#333" : "#f1f1f1",
+                      borderRadius: 10,
+                    },
+                    "&::-webkit-scrollbar-thumb": {
+                      background: darkMode ? "#666" : "#bbb",
+                      borderRadius: 10,
+                    },
+                    "&::-webkit-scrollbar-thumb:hover": {
+                      background: darkMode ? "#888" : "#999",
+                    },
                   }}
                 >
-                  {task.description || "No description"}
-                </Typography>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      fontSize: "0.95rem",
+                      lineHeight: 1.6,
+                      color: darkMode ? "#ddd" : "text.secondary",
+                    }}
+                  >
+                    {task.description || "No description"}
+                  </Typography>
+                </Box>
 
-                <Box display="flex" gap={0.5} flexWrap="wrap" mb={1.5}>
+                {/* Labels */}
+                <Box display="flex" gap={0.7} flexWrap="wrap" mb={2}>
                   {task.labels.map((l) => (
                     <Chip
                       key={l._id}
@@ -250,12 +283,13 @@ export default function Dashboard({ token, darkMode }) {
                         bgcolor: l.color,
                         color: "white",
                         fontSize: "0.85rem",
-                        height: 18,
+                        height: 22,
                       }}
                     />
                   ))}
                 </Box>
 
+                {/* Status + Priority */}
                 <Box
                   display="flex"
                   justifyContent="space-between"
@@ -272,7 +306,7 @@ export default function Dashboard({ token, darkMode }) {
                         ? "warning"
                         : "default"
                     }
-                    sx={{ fontSize: "0.85rem", height: 20 }}
+                    sx={{ fontSize: "0.85rem", height: 24 }}
                   />
                   <Chip
                     label={task.priority}
@@ -284,14 +318,18 @@ export default function Dashboard({ token, darkMode }) {
                         ? "warning"
                         : "success"
                     }
-                    sx={{ fontSize: "0.85rem", height: 20 }}
+                    sx={{ fontSize: "0.85rem", height: 24 }}
                   />
                 </Box>
 
+                {/* Due Date */}
                 {task.due_date && (
                   <Typography
                     variant="caption"
-                    sx={{ color: "#aaa", fontSize: "0.8rem" }}
+                    sx={{
+                      color: darkMode ? "#aaa" : "#777",
+                      fontSize: "0.85rem",
+                    }}
                   >
                     Due: {new Date(task.due_date).toLocaleDateString()}
                   </Typography>
@@ -302,6 +340,7 @@ export default function Dashboard({ token, darkMode }) {
         ))}
       </Grid>
 
+      {/* FAB */}
       <Fab
         color="primary"
         sx={{ position: "fixed", bottom: 32, right: 32 }}
@@ -321,13 +360,17 @@ export default function Dashboard({ token, darkMode }) {
         <Add />
       </Fab>
 
+      {/* Dialog */}
       <Dialog
         open={open}
         onClose={() => setOpen(false)}
         maxWidth="sm"
         fullWidth
+        PaperProps={{
+          sx: { bgcolor: darkMode ? "#1e1e1e" : "background.paper" },
+        }}
       >
-        <DialogTitle>
+        <DialogTitle sx={{ color: darkMode ? "#fff" : "text.primary" }}>
           {editingTask ? "Edit Task" : "Create New Task"}
         </DialogTitle>
         <DialogContent>
@@ -337,6 +380,8 @@ export default function Dashboard({ token, darkMode }) {
             margin="dense"
             value={form.title}
             onChange={(e) => setForm({ ...form, title: e.target.value })}
+            InputLabelProps={{ style: { color: darkMode ? "#ccc" : "#666" } }}
+            sx={{ input: { color: darkMode ? "#fff" : "#000" } }}
           />
           <TextField
             label="Description"
@@ -346,12 +391,17 @@ export default function Dashboard({ token, darkMode }) {
             rows={3}
             value={form.description}
             onChange={(e) => setForm({ ...form, description: e.target.value })}
+            InputLabelProps={{ style: { color: darkMode ? "#ccc" : "#666" } }}
+            sx={{ textarea: { color: darkMode ? "#fff" : "#000" } }}
           />
           <FormControl fullWidth margin="dense">
-            <InputLabel>Status</InputLabel>
+            <InputLabel sx={{ color: darkMode ? "#ccc" : "#666" }}>
+              Status
+            </InputLabel>
             <Select
               value={form.status}
               onChange={(e) => setForm({ ...form, status: e.target.value })}
+              sx={{ color: darkMode ? "#fff" : "#000" }}
             >
               <MenuItem value="pending">Pending</MenuItem>
               <MenuItem value="in-progress">In Progress</MenuItem>
@@ -359,10 +409,13 @@ export default function Dashboard({ token, darkMode }) {
             </Select>
           </FormControl>
           <FormControl fullWidth margin="dense">
-            <InputLabel>Priority</InputLabel>
+            <InputLabel sx={{ color: darkMode ? "#ccc" : "#666" }}>
+              Priority
+            </InputLabel>
             <Select
               value={form.priority}
               onChange={(e) => setForm({ ...form, priority: e.target.value })}
+              sx={{ color: darkMode ? "#fff" : "#000" }}
             >
               <MenuItem value="low">Low</MenuItem>
               <MenuItem value="medium">Medium</MenuItem>
@@ -374,13 +427,19 @@ export default function Dashboard({ token, darkMode }) {
             type="date"
             fullWidth
             margin="dense"
-            InputLabelProps={{ shrink: true }}
+            InputLabelProps={{
+              shrink: true,
+              style: { color: darkMode ? "#ccc" : "#666" },
+            }}
             value={form.due_date}
             onChange={(e) => setForm({ ...form, due_date: e.target.value })}
+            sx={{ input: { color: darkMode ? "#fff" : "#000" } }}
           />
 
           <FormControl fullWidth margin="dense">
-            <InputLabel>Labels</InputLabel>
+            <InputLabel sx={{ color: darkMode ? "#ccc" : "#666" }}>
+              Labels
+            </InputLabel>
             <Select
               multiple
               value={form.labels}
@@ -390,7 +449,7 @@ export default function Dashboard({ token, darkMode }) {
                   {selected.map((id) => {
                     const label = labels.find((l) => l._id === id);
                     return label ? (
-                      <sunnyChip
+                      <Chip
                         key={id}
                         label={label.name}
                         size="small"
@@ -400,6 +459,7 @@ export default function Dashboard({ token, darkMode }) {
                   })}
                 </Box>
               )}
+              sx={{ color: darkMode ? "#fff" : "#000" }}
             >
               {labels.map((label) => (
                 <MenuItem key={label._id} value={label._id}>
@@ -419,8 +479,19 @@ export default function Dashboard({ token, darkMode }) {
             </Select>
           </FormControl>
 
-          <Box sx={{ mt: 2, p: 2, border: "1px dashed #666", borderRadius: 2 }}>
-            <Typography variant="subtitle2" gutterBottom>
+          <Box
+            sx={{
+              mt: 2,
+              p: 2,
+              border: `1px dashed ${darkMode ? "#666" : "#ccc"}`,
+              borderRadius: 2,
+            }}
+          >
+            <Typography
+              variant="subtitle2"
+              gutterBottom
+              sx={{ color: darkMode ? "#fff" : "text.primary" }}
+            >
               <LabelIcon fontSize="small" /> Create New Label
             </Typography>
             <TextField
@@ -428,7 +499,12 @@ export default function Dashboard({ token, darkMode }) {
               size="small"
               value={newLabelName}
               onChange={(e) => setNewLabelName(e.target.value)}
-              sx={{ mr: 1, width: 140 }}
+              sx={{
+                mr: 1,
+                width: 140,
+                input: { color: darkMode ? "#fff" : "#000" },
+              }}
+              InputLabelProps={{ style: { color: darkMode ? "#ccc" : "#666" } }}
             />
             <TextField
               type="color"
@@ -446,14 +522,19 @@ export default function Dashboard({ token, darkMode }) {
               onClick={createLabel}
               variant="outlined"
               size="small"
-              sx={{ ml: 1 }}
+              sx={{ ml: 1, color: darkMode ? "#fff" : "primary" }}
             >
               Add
             </Button>
           </Box>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpen(false)}>Cancel</Button>
+          <Button
+            onClick={() => setOpen(false)}
+            sx={{ color: darkMode ? "#ccc" : "text.secondary" }}
+          >
+            Cancel
+          </Button>
           <Button onClick={handleSubmit} variant="contained">
             {editingTask ? "Update" : "Create"}
           </Button>
