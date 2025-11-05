@@ -1,0 +1,47 @@
+{
+  "info": {
+    "name": "200 Tasks - Bulk Create",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Create Task",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"{{ $randomJobTitle }}\",\n  \"description\": \"{{ $randomCatchPhrase }}\",\n  \"status\": \"{{ $randomArrayItem ['pending','in-progress','completed'] }}\",\n  \"priority\": \"{{ $randomArrayItem ['low','medium','high'] }}\",\n  \"due_date\": \"{{ $randomDateFuture }}\",\n  \"labels\": [\"{{labelId}}\"]\n}",
+          "options": { "raw": { "language": "json" } }
+        },
+        "url": {
+          "raw": "http://localhost:5000/tasks",
+          "host": ["localhost"],
+          "port": "5000",
+          "path": ["tasks"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Task created\", function () {",
+              "    pm.response.to.have.status(201);",
+              "});"
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    { "key": "token", "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MGEzYmUyZDcwOWY2M2I3YTM1ZGEzMSIsImlhdCI6MTc2MjI4ODA4MCwiZXhwIjoxNzYyMjkxNjgwfQ.s469hlOlaSs1rfyBabecVUvv-szdXWblJ5Fxsm2LDrw" },
+    { "key": "labelId", "value": "690a624796d7d38a23d1885a" }
+  ]
+}
