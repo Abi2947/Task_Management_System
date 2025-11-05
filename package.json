@@ -1,0 +1,30 @@
+{
+  "name": "task-manager-app",
+  "version": "1.0.0",
+  "description": "Full-stack Task Manager with JWT auth, task ownership, labels, filtering, sorting, pagination, and responsive frontend.",
+  "private": true,
+  "scripts": {
+    "start": "npm run dev",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm start",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "install:all": "npm install && cd frontend && npm install && cd ../backend && npm install"
+  },
+  "keywords": [
+    "task-manager",
+    "mern",
+    "jwt",
+    "react",
+    "task-manager-frontend",
+    "task-manager-backend",
+    "fullstack"
+  ],
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "author": "Utsab Gautam",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
