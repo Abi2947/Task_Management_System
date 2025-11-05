@@ -208,8 +208,8 @@ This project is licensed under the **MIT License**.
 ## 📸 Screenshots
 
 ![Signup](./backend/public/images/signup.png)
-![Login](./backend/public/images/Login.png)
-![Dashboard](./backend/public/images/Dashboard.png)
+![Login](./backend/public/images/login.png)
+![Dashboard](./backend/public/images/dashboard.png)
 ![Tasks Create](./backend/public/images/task_create.png)
 ![Test 1](./backend/public/images/test_1.png)
 ![Test 2](./backend/public/images/test_2.png)
