@@ -10,7 +10,7 @@ const connectDB = async () => {
     console.log("MongoDB Connected");
   } catch (err) {
     console.error("DB Connection Error:", err.message);
-    setTimeout(commectDB, 5000);
+    setTimeout(connectDB, 5000);
   }
 };
 
